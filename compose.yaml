@@ -1,0 +1,61 @@
+services:
+
+    stt:
+        build: 
+            context: .
+            target: whisper
+        restart: on-failure
+        ports:
+            - "8080:8080"
+        volumes:
+            - whisper_models:/app/models
+
+    # php:
+    #     build:
+    #         context: .
+    #         target: local
+    #         args:
+    #             UID: 1000
+    #             USER: local
+    #     restart: on-failure
+    #     volumes:
+    #         - ./php/:/app/
+    #         - ./.docker/php/php-ini-overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
+    #         - app_home:/home/developer
+    #     working_dir: /app
+    #     tty: true
+    #     networks:
+    #         devapp:
+
+    # ollama:
+    #     image: ollama/ollama
+    #     restart: on-failure
+    #     ports:
+    #         - "11434:11434"  # HTTP API port
+    #     volumes:
+    #         - ollama_models:/root/.ollama
+    #     networks:
+    #         devapp:
+
+    # tts:
+    #     build:
+    #         context: .
+    #         target: ollama
+    #     restart: on-failure
+    #     ports:
+    #         - "5002:5002"
+    #     volumes:
+    #         - ./tts:/app
+    #     tty: true
+    #     networks:
+    #         devapp:
+
+
+networks:
+    devapp:
+        name: devapp
+
+volumes:
+    whisper_models:
+    app_home:
+    ollama_models:
