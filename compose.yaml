@@ -9,6 +9,21 @@ services:
             - "8080:8080"
         volumes:
             - whisper_models:/app/models
+        networks:
+            devapp:
+
+    tts:
+        build:
+            context: .
+            target: coqui
+        restart: on-failure
+        ports:
+            - "5002:5002"
+        volumes:
+            - coqui_models:/root/.local/share/tts
+        tty: true
+        networks:
+            devapp:
 
     # php:
     #     build:
@@ -57,5 +72,6 @@ networks:
 
 volumes:
     whisper_models:
+    coqui_models:
     app_home:
     ollama_models:

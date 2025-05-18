@@ -43,7 +43,10 @@ llm-request:
 	curl http://localhost:11434/api/generate -d '{"model": "llama3", "prompt": "Podaj dwa dowolne słowa", "stream": false}' && echo
 
 
+.PHONY: stt-request
+stt-request:
+	@curl -X POST http://localhost:8080/transcribe -F "audio_file=@audio/test.wav"
+
 .PHONY: tts-request
 tts-request:
-	@curl -X POST http://localhost:8080/transcribe -F "audio_file=@audio/test.wav"
-	
+	@curl -X POST http://localhost:5002/speak -F "text=Witaj świecie!" --output audio/output.wav
