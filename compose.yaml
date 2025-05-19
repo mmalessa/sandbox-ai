@@ -1,29 +1,45 @@
 services:
 
-    stt:
-        build: 
+    krystyna:
+        build:
             context: .
-            target: whisper
+            target: krystyna
         restart: on-failure
         ports:
             - "8080:8080"
-        volumes:
-            - whisper_models:/app/models
-        networks:
-            devapp:
-
-    tts:
-        build:
-            context: .
-            target: coqui
-        restart: on-failure
-        ports:
             - "5002:5002"
         volumes:
+            - whisper_models:/app/models
             - coqui_models:/root/.local/share/tts
+            - ./python:/app/python
         tty: true
         networks:
             devapp:
+
+    # stt:
+    #     build: 
+    #         context: .
+    #         target: whisper
+    #     restart: on-failure
+    #     ports:
+    #         - "8080:8080"
+    #     volumes:
+    #         - whisper_models:/app/models
+    #     networks:
+    #         devapp:
+
+    # tts:
+    #     build:
+    #         context: .
+    #         target: coqui
+    #     restart: on-failure
+    #     ports:
+    #         - "5002:5002"
+    #     volumes:
+    #         - coqui_models:/root/.local/share/tts
+    #     tty: true
+    #     networks:
+    #         devapp:
 
     # php:
     #     build:

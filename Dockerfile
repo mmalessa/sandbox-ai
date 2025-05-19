@@ -1,3 +1,30 @@
+FROM python:3.11-slim as krystyna
+
+RUN apt-get update && apt-get install -y \
+    build-essential cmake curl git ffmpeg sox wget\
+    espeak-ng libespeak-ng1 libsndfile1  \
+    gcc g++ make python3-dev libsndfile1-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# WHISPER
+WORKDIR /app
+RUN git clone --depth=1 https://github.com/ggerganov/whisper.cpp.git
+WORKDIR /app/whisper.cpp
+RUN make
+WORKDIR /app
+RUN mkdir -p models
+RUN wget -O models/ggml-tiny.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.bin
+
+# COQUI
+RUN git clone https://github.com/coqui-ai/TTS.git
+WORKDIR /app/TTS
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir .
+WORKDIR /app
+
+##############################################################################################
 FROM python:3.11-slim as whisper
 
 RUN apt-get update && apt-get install -y \
@@ -15,7 +42,6 @@ RUN mkdir -p models
 RUN wget -O models/ggml-tiny.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.bin
 
 COPY python/whisper/server.py /app/server.py
-
 RUN pip3 install --no-cache-dir flask
 
 EXPOSE 8080
